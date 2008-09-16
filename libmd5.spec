@@ -33,9 +33,10 @@ Requires:	%{name}-devel = %{version}-%{release}
 Static libmd5 library.
 
 %prep
-%setup -qcn %{name}-%{version}
+%setup -qc
 
 %build
+# XXX .spec putting optimization flags should be reasoned
 %{__cc} %{rpmcflags} -O3 -funroll-loops -fpic -c md5.c
 %{__ar} rc libmd5.a md5.o
 %{__cc} md5.o -shared -o libmd5.so -Wl,-soname=libmd5.so.0 && /sbin/ldconfig -n .
