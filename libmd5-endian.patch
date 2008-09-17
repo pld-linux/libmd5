@@ -1,0 +1,18 @@
+--- libmd5-20020413/md5.c.orig	2002-04-13 21:20:28.000000000 +0200
++++ libmd5-20020413/md5.c	2008-09-17 20:03:17.739629583 +0200
+@@ -53,10 +53,13 @@
+ 
+ #include "md5.h"
+ #include <string.h>
++#include <endian.h>
+ 
+ #undef BYTE_ORDER	/* 1 = big-endian, -1 = little-endian, 0 = unknown */
+-#ifdef ARCH_IS_BIG_ENDIAN
+-#  define BYTE_ORDER (ARCH_IS_BIG_ENDIAN ? 1 : -1)
++#if __BYTE_ORDER == __LITTLE_ENDIAN
++#  define BYTE_ORDER -1
++#elif __BYTE_ORDER == __BIG_ENDIAN
++#  define BYTE_ORDER 1
+ #else
+ #  define BYTE_ORDER 0
+ #endif
