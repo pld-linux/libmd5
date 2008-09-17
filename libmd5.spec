@@ -10,6 +10,16 @@ URL:		http://sourceforge.net/projects/libmd5-rfc/
 BuildRequires:	libtool
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%ifarch %{ix86} %{x8664} alpha
+%define		specflags	-DARCH_IS_BIG_ENDIAN=0
+%endif
+%ifarch sparc sparc64 powerpc ppc ppc64
+%define		specflags	-DARCH_IS_BIG_ENDIAN=1
+%endif
+%ifarch arm
+# detect endianess in runtime.
+%endif
+
 %description
 This is a very small C library implementing RFC1321, the MD5 message
 digest function. Unlike the existing W3C libmd5, it was written from
