@@ -1,4 +1,5 @@
 Summary:	RFC1321-based (RSA-free) MD5 library
+Summary(pl.UTF-8):	Biblioteka MD5 oparta na RFC1321 (wolna od zobowiązań RSA)
 Name:		libmd5
 Version:	20020413
 Release:	1
@@ -10,10 +11,10 @@ URL:		http://sourceforge.net/projects/libmd5-rfc/
 BuildRequires:	libtool
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%ifarch %{ix86} %{x8664} alpha
+%ifarch %{ix86} %{x8664} alpha ia64
 %define		specflags	-DARCH_IS_BIG_ENDIAN=0
 %endif
-%ifarch sparc sparc64 powerpc ppc ppc64
+%ifarch ppc ppc64 s390 s390x sparc sparcv9 sparc64
 %define		specflags	-DARCH_IS_BIG_ENDIAN=1
 %endif
 %ifarch arm
@@ -26,21 +27,36 @@ digest function. Unlike the existing W3C libmd5, it was written from
 the specifications (not the sample code) in RFC1321, and therefore is
 not required to acknowledge RSA in any way.
 
+%description -l pl.UTF-8
+To jest bardzo mała biblioteka C zawierająca implementację RFC1321 -
+funkcję skrótu MD5. W przeciwieństwie do istniejącej wcześniej libmd5
+z W3C ta wersja została napisana na podstawie specyfikacji (a nie kodu
+przykładowego) z RFC1321, więc nie wymaga jakiegokolwiek powoływania
+się na RSA.
+
 %package devel
-Summary:	Header files for libmd5 library
+Summary:	Header file for libmd5 library
+Summary(pl.UTF-8):	Plik nagłówkowy biblioteki libmd5
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
-Header files for libmd5 library.
+Header file for libmd5 library.
+
+%description devel -l pl.UTF-8
+Plik nagłówkowy biblioteki libmd5.
 
 %package static
 Summary:	Static libmd5 library
+Summary(pl.UTF-8):	Statyczna biblioteka libmd5
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static libmd5 library.
+
+%description static -l pl.UTF-8
+Statyczna biblioteka libmd5.
 
 %prep
 %setup -qc
@@ -75,8 +91,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libmd5.so
 %{_libdir}/libmd5.la
-%{_libdir}/libmd5.so
 %{_includedir}/md5.h
 
 %files static
