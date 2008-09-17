@@ -48,11 +48,11 @@ Static libmd5 library.
 %build
 # with -prefer-pic you can link libmd5 statically in shared object.
 libtool --mode=compile --tag=CC %{__cc} %{rpmcflags} -prefer-pic -shared -c md5.c
-libtool --mode=link %{__cc} -rpath %{_libdir} -o libmd5.la md5.lo
+libtool --mode=link --tag=CC %{__cc} -rpath %{_libdir} -o libmd5.la md5.lo
 
 # build and run testcase.
 libtool --mode=compile --tag=CC %{__cc} %{rpmcflags} -static -c md5main.c
-libtool --mode=link %{__cc} -o test md5main.lo libmd5.la -lm
+libtool --mode=link --tag=CC %{__cc} -o test md5main.lo libmd5.la -lm
 ./test --test
 
 %install
@@ -71,6 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libmd5.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libmd5.so.0
 
 %files devel
 %defattr(644,root,root,755)
