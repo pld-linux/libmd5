@@ -7,19 +7,10 @@ License:	BSD
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/libmd5-rfc/md5.tar.gz
 # Source0-md5:	60f1691ece16bedc12dd2aa949cba606
+Patch0:		%{name}-endian.patch
 URL:		http://sourceforge.net/projects/libmd5-rfc/
 BuildRequires:	libtool
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%ifarch %{ix86} %{x8664} alpha ia64
-%define		specflags	-DARCH_IS_BIG_ENDIAN=0
-%endif
-%ifarch ppc ppc64 s390 s390x sparc sparcv9 sparc64
-%define		specflags	-DARCH_IS_BIG_ENDIAN=1
-%endif
-%ifarch arm
-# detect endianess in runtime.
-%endif
 
 %description
 This is a very small C library implementing RFC1321, the MD5 message
@@ -39,6 +30,7 @@ Summary:	Header file for libmd5 library
 Summary(pl.UTF-8):	Plik nagłówkowy biblioteki libmd5
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Conflicts:	w3c-libwww-devel < 5.4.0-9
 
 %description devel
 Header file for libmd5 library.
@@ -51,6 +43,7 @@ Summary:	Static libmd5 library
 Summary(pl.UTF-8):	Statyczna biblioteka libmd5
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
+Conflicts:	w3c-libwww-static < 5.4.0-9
 
 %description static
 Static libmd5 library.
@@ -60,6 +53,7 @@ Statyczna biblioteka libmd5.
 
 %prep
 %setup -qc
+%patch0 -p1
 
 %build
 # with -prefer-pic you can link libmd5 statically in shared object.
@@ -67,8 +61,8 @@ libtool --mode=compile --tag=CC %{__cc} %{rpmcflags} -prefer-pic -shared -c md5.
 libtool --mode=link --tag=CC %{__cc} -rpath %{_libdir} -o libmd5.la md5.lo
 
 # build and run testcase.
-libtool --mode=compile --tag=CC %{__cc} %{rpmcflags} -static -c md5main.c
-libtool --mode=link --tag=CC %{__cc} -o test md5main.lo libmd5.la -lm
+%{__cc} %{rpmcflags} -c md5main.c
+libtool --mode=link --tag=CC %{__cc} -o test md5main.o libmd5.la -lm
 ./test --test
 
 %install
@@ -76,7 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_libdir}
 
 install -D md5.h $RPM_BUILD_ROOT%{_includedir}/md5.h
-libtool --mode=install cp libmd5.la $RPM_BUILD_ROOT%{_libdir}
+libtool --mode=install install libmd5.la $RPM_BUILD_ROOT%{_libdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
