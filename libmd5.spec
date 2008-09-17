@@ -7,7 +7,7 @@ Group:		Libraries
 Source0:	http://dl.sourceforge.net/libmd5-rfc/md5.tar.gz
 # Source0-md5:	60f1691ece16bedc12dd2aa949cba606
 URL:		http://sourceforge.net/projects/libmd5-rfc/
-BuildRequires:	/sbin/ldconfig
+BuildRequires:	libtool
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -36,21 +36,21 @@ Static libmd5 library.
 %setup -qc
 
 %build
-# XXX .spec putting optimization flags should be reasoned
-%{__cc} %{rpmcflags} -O3 -funroll-loops -fpic -c md5.c
-%{__ar} rc libmd5.a md5.o
-%{__cc} md5.o -shared -o libmd5.so -Wl,-soname=libmd5.so.0 && /sbin/ldconfig -n .
+# with -prefer-pic you can link libmd5 statically in shared object.
+libtool --mode=compile --tag=CC %{__cc} %{rpmcflags} -prefer-pic -shared -c md5.c
+libtool --mode=link %{__cc} -rpath %{_libdir} -o libmd5.la md5.lo
 
 # build and run testcase.
-%{__cc} md5main.c -o test ./libmd5.so -lm
-LD_PRELOAD=./libmd5.so ./test --test
+libtool --mode=compile --tag=CC %{__cc} %{rpmcflags} -static -c md5main.c
+libtool --mode=link %{__cc} -o test md5main.lo libmd5.la -lm
+./test --test
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_libdir}
 
 install -D md5.h $RPM_BUILD_ROOT%{_includedir}/md5.h
-install libmd5.* $RPM_BUILD_ROOT%{_libdir}
+libtool --mode=install cp libmd5.la $RPM_BUILD_ROOT%{_libdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -60,10 +60,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so
+%attr(755,root,root) %{_libdir}/libmd5.so.*.*.*
 
 %files devel
 %defattr(644,root,root,755)
+%{_libdir}/libmd5.la
 %{_libdir}/libmd5.so
 %{_includedir}/md5.h
 
