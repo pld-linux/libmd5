@@ -2,7 +2,7 @@ Summary:	RFC1321-based (RSA-free) MD5 library
 Summary(pl.UTF-8):	Biblioteka MD5 oparta na RFC1321 (wolna od zobowiązań RSA)
 Name:		libmd5
 Version:	20020413
-Release:	1
+Release:	2
 License:	BSD
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/libmd5-rfc/md5.tar.gz
@@ -58,7 +58,7 @@ Statyczna biblioteka libmd5.
 %build
 # with -prefer-pic you can link libmd5 statically in shared object.
 libtool --mode=compile --tag=CC %{__cc} %{rpmcflags} -prefer-pic -shared -c md5.c
-libtool --mode=link --tag=CC %{__cc} -rpath %{_libdir} -o libmd5.la md5.lo
+libtool --mode=link --tag=CC %{__cc} -rpath %{_libdir} -version-info 1:0:0 -o libmd5.la md5.lo
 
 # build and run testcase.
 %{__cc} %{rpmcflags} -c md5main.c
@@ -81,7 +81,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libmd5.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libmd5.so.0
+%attr(755,root,root) %ghost %{_libdir}/libmd5.so.1
 
 %files devel
 %defattr(644,root,root,755)
