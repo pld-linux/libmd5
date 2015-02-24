@@ -2,7 +2,7 @@ Summary:	RFC1321-based (RSA-free) MD5 library
 Summary(pl.UTF-8):	Biblioteka MD5 oparta na RFC1321 (wolna od zobowiązań RSA)
 Name:		libmd5
 Version:	20020413
-Release:	3
+Release:	4
 License:	BSD
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/libmd5-rfc/md5.tar.gz
