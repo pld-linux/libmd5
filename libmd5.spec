@@ -53,7 +53,7 @@ Statyczna biblioteka libmd5.
 
 %prep
 %setup -qc
-%patch0 -p1
+%patch -P0 -p1
 
 %build
 # with -prefer-pic you can link libmd5 statically in shared object.
